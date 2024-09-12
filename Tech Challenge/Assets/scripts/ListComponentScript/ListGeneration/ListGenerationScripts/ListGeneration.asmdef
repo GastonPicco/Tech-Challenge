@@ -1,0 +1,17 @@
+{
+    "name": "ListGeneration",
+    "rootNamespace": "",
+    "references": [
+        "GUID:49244876cc3430e4090c785183998c58",
+        "GUID:5ffb137ef371e774bb35668f15409177"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
