@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 using System;
-using static UnityEditor.PlayerSettings;
-using UnityEditor.Experimental.GraphView;
 
 public class ListCreatorInputSistemManager : MonoBehaviour
 {
