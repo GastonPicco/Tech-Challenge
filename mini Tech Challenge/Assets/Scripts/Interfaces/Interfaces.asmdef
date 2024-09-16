@@ -1,9 +1,8 @@
 {
-    "name": "Services",
+    "name": "Interfaces",
     "rootNamespace": "",
     "references": [
-        "GUID:daa3c18d10e42954a89c97c3a4967070",
-        "GUID:1fdac2d318cc9dc4785989ec7e35eac3"
+        "GUID:daa3c18d10e42954a89c97c3a4967070"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

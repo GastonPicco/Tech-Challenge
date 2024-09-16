@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
-using UnityEngine.UI;
 
 public class EmployeeEditor : MonoBehaviour
 {
     [SerializeField] TMP_InputField idInput, nameInput, lastNameInput, positionInput, seniorityInput;
     [SerializeField] GameObject List;
     string xmlFileName = "PositionsData.xml";
-    FileManager fileManager;
+    private IFileManager _fileManager;
 
-    private void Start()
+    public EmployeeEditor(IFileManager fileManager)
     {
-        fileManager = new FileManager();
+        _fileManager = fileManager;
     }
 
     public void SetValues(string id, string name, string lastname, string position, string seniority)
@@ -28,17 +27,18 @@ public class EmployeeEditor : MonoBehaviour
 
     public void EditEmployee()
     {
- 
+        if (_fileManager == null)
+        {
+            _fileManager = new FileManager(); 
+        }
         if (!int.TryParse(idInput.text, out int employeeId))
         {
             Debug.LogError($"El ID {idInput.text} no es un número entero válido.");
-            return; 
+            return;
         }
 
-       
-        List<Position> positions = fileManager.LoadPositionsFromXml(xmlFileName);
+        List<Position> positions = _fileManager.LoadPositionsFromXml(xmlFileName);
 
-    
         string newName = nameInput.text;
         string newLastName = lastNameInput.text;
         string newPosition = positionInput.text;
@@ -91,7 +91,7 @@ public class EmployeeEditor : MonoBehaviour
             Debug.Log($"Nuevo empleado creado en la posición {newPosition} y seniority {newSeniority}.");
 
             // guardar los datos actualizados en el archivo XML
-            fileManager.SavePositionsToXml(positions, xmlFileName);
+            _fileManager.SavePositionsToXml(positions, xmlFileName);
             Debug.Log("Datos guardados correctamente.");
             return;
         }
@@ -146,19 +146,23 @@ public class EmployeeEditor : MonoBehaviour
         employee.LastName = newLastName;
 
         // guardar los datos actualizados en el archivo xml
-        fileManager.SavePositionsToXml(positions, xmlFileName);
+        _fileManager.SavePositionsToXml(positions, xmlFileName);
         Debug.Log("Empleado editado correctamente.");
     }
 
     public void DeleteEmployeeById(int employeeId)
     {
-        // cargar datos del archivo cml
-        List<Position> positions = fileManager.LoadPositionsFromXml(xmlFileName);
+        if (_fileManager == null)
+        {
+            _fileManager = new FileManager();  // Aquí aseguramos que esté inicializado
+        }
+        // cargar datos del archivo xml
+        List<Position> positions = _fileManager.LoadPositionsFromXml(xmlFileName);
 
         Employee employee = null;
         Seniority currentSeniority = null;
 
-        //buscar empleado por ID
+        // buscar empleado por ID
         foreach (var position in positions)
         {
             foreach (var seniority in position.Seniorities)
@@ -167,10 +171,10 @@ public class EmployeeEditor : MonoBehaviour
                 if (employee != null)
                 {
                     currentSeniority = seniority;
-                    break;
+                    break; 
                 }
             }
-            if (employee != null) break; // termina el foreach por que ya encontro un employee
+            if (employee != null) break; // termina la búsqueda si ya encontró al empleado
         }
 
         // si el empleado no existe, lanzar error
@@ -180,12 +184,33 @@ public class EmployeeEditor : MonoBehaviour
             return;
         }
 
-        // eliminar el empleado del seniority
-        currentSeniority.Employees.Remove(employee);
-        Debug.Log($"Empleado con ID {employeeId} eliminado correctamente.");
 
-        // guardar los datos actualizados en el archivo xml
-        fileManager.SavePositionsToXml(positions, xmlFileName);
+        Position deletedPosition = positions.Find(p => p.JobTitle == "Deleted");
+        if (deletedPosition == null)
+        {
+
+            deletedPosition = new Position("Deleted", new List<Seniority>());
+            positions.Add(deletedPosition);
+            Debug.Log("Posición 'Deleted' creada.");
+        }
+
+        Seniority deletedSeniority = deletedPosition.Seniorities.Find(s => s.Level == "Deleted");
+        if (deletedSeniority == null)
+        {
+            deletedSeniority = new Seniority("Deleted", 0f, 0f, new List<Employee>());
+            deletedPosition.Seniorities.Add(deletedSeniority);
+            Debug.Log("Seniority 'Deleted' creado.");
+        }
+
+        currentSeniority.Employees.Remove(employee);
+        deletedSeniority.Employees.Add(employee);
+
+        employee.FirstName = string.Empty;
+        employee.LastName = string.Empty;
+
+        Debug.Log($"Empleado con ID {employeeId} ha sido movido a la posición 'Deleted' y seniority 'Deleted'.");
+
+        _fileManager.SavePositionsToXml(positions, xmlFileName);
     }
 
     public void Clear()

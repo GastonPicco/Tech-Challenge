@@ -4,12 +4,12 @@ using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
 
-public class FileManager
+public class FileManager : IFileManager
 {
     public string GetDocumentsPath(string fileName)
     {
         string documentsPath = Application.persistentDataPath;
-        return Path.Combine(documentsPath, fileName);
+        return Path.Combine(documentsPath, fileName = "PositionsData.xml");
     }
 
     public void SavePositionsToXml(List<Position> positions, string fileName)

@@ -8,6 +8,13 @@ public class SpacingFixer : MonoBehaviour
 {
     public GameObject childList;
     //Por Algun motivo que no entiendo la lista se renderiza mejor con este fix, parece que con solo instanciar el componente no actualiza sus medidas
+    public void Start()
+    {
+        if (this.gameObject.name == "Deleted")
+        {
+            gameObject.SetActive(false);
+        }
+    }
     public void ListToggle()
     {
         if (childList.activeInHierarchy)

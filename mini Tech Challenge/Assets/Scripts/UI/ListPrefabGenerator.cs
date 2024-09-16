@@ -11,22 +11,50 @@ public class ListPrefabGenerator : MonoBehaviour
     [SerializeField] GameObject PositionPrefab, SeniorityPrefab, ListPrefab;
     string xmlfileName;
 
+    private IFileManager _fileManager;
+
     public void StartLoad()
     {
         xmlfileName = "PositionsData.xml";
+
+        if (_fileManager == null)
+        {
+            _fileManager = new FileManager();  
+        }
+
         StartCoroutine(LoadPrefabsCoroutine());
     }
 
     IEnumerator LoadPrefabsCoroutine()
     {
         ClearListTransform();
-        FileManager fileManager = new FileManager();
-        List<Position> positionsToLoad = fileManager.LoadPositionsFromXml(xmlfileName);
 
-        // iterar sobre cada posición, pero con una pausa entre cada frame
+        
+        if (_fileManager == null)
+        {
+            Debug.LogError("FileManager no está inicializado.");
+            yield break;
+        }
+
+       
+        List<Position> positionsToLoad = _fileManager.LoadPositionsFromXml(xmlfileName);
+        if (positionsToLoad == null || positionsToLoad.Count == 0)
+        {
+            Debug.LogError($"No se pudo cargar la lista de posiciones desde el archivo {xmlfileName}.");
+            yield break;
+        }
+
+       
+        if (PositionPrefab == null || SeniorityPrefab == null || ListPrefab == null)
+        {
+            Debug.LogError("Uno o más prefabs no están asignados en el inspector.");
+            yield break;
+        }
+
+  
         foreach (Position position in positionsToLoad)
         {
-            yield return StartCoroutine(LoadSinglePosition(position));  // pausar después de cada posición
+            yield return StartCoroutine(LoadSinglePosition(position)); 
         }
 
         ResetUI(ListTransform.gameObject);
