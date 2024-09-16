@@ -2,6 +2,10 @@
 Tech Challenge JamcCity
 Video sobre el comportamiento de la Aplicacion https://www.youtube.com/watch?v=VWsngwI82tM&ab_channel=SebastianPiccoDev
 
+Es posible que el lunes 16 haga un push con un proyecto alternativo, ya que no quedé satisfecho con la estructura de mis datos. Aunque funciona bien, me di cuenta casi al final del Challenge de que no es lo suficientemente óptima. Me hubiera gustado implementar objetos más eficientes, anidando correctamente Positions > Seniorities > Employees. Una estructura como esta habría facilitado mucho el manejo de los datos de una forma más sencilla y efectiva.
+
+En caso de no haber podido terminarlo a tiempo, el push se hará igualmente pero fuera de fecha.
+
 - Optimizacion.
 1) Separación de responsabilidades: Implementé una arquitectura sencilla pero funcional tratando de respetar el principio de responsabilidad única en lo posible. Cada clase tiene un rol específico en el sistema, lo que mejora la mantenibilidad y la capacidad de prueba del código.
 
